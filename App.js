@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+  FlatList,
+} from "react-native";
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState("");
@@ -10,13 +18,11 @@ export default function App() {
   };
   const addGoalInputHandler = () => {
     // console.log(enteredGoalText);
-    if (enteredGoalText) {
-      setCourseGoals((currentCourseGoals) => [
-        ...currentCourseGoals,
-        enteredGoalText,
-      ]);
-      setEnteredGoalText("");
-    }
+    setCourseGoals((currentCourseGoals) => [
+      ...currentCourseGoals,
+      {text: enteredGoalText,  id: Math.random().toString()}, // Key property for IoS Devices List in FlatList
+    ]);
+    // setEnteredGoalText("");
   };
   return (
     <View style={styles.appContainer}>
@@ -29,20 +35,19 @@ export default function App() {
         <Button title="Add Goal" onPress={addGoalInputHandler} />
       </View>
       <View style={styles.goalsContainer}>
-        <ScrollView>
-          {courseGoals && courseGoals.length ? (
-            courseGoals.map((goal, idx) => (
-              <View key={idx} style={styles.goalItem}>
-                <Text style={styles.goalText}>
-                  {goal}
-                </Text>
+        <FlatList
+          data={courseGoals}
+          renderItem={(itemData) => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
               </View>
-            ))
-          ) : (
-            <Text>List of goals...</Text>
-          )}
-        </ScrollView>
-      </View>      
+            );
+          }}
+          keyExtractor={(item) => item.id}
+          alwaysBounceVertical={false}
+        />
+      </View>
     </View>
   );
 }
@@ -76,9 +81,9 @@ const styles = StyleSheet.create({
     margin: 8,
     padding: 8,
     borderRadius: 6,
-    backgroundColor: "#5e0acc",  
+    backgroundColor: "#5e0acc",
   },
   goalText: {
     color: "#fff",
-  }
+  },
 });
