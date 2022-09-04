@@ -15,16 +15,27 @@ export default function App() {
     ]);
   };
 
+  const deleteGoalHandler = (id) => {
+    // console.log('DELETE');
+    setCourseGoals((currentCourseGoals) =>
+      currentCourseGoals.filter((goal) => goal.id !== id)
+    );
+  };
+
   return (
     <View style={styles.appContainer}>
-      <GoalInput        
-        onAddGoal={addGoalInputHandler}
-      />
+      <GoalInput onAddGoal={addGoalInputHandler} />
       <View style={styles.goalsContainer}>
         <FlatList
           data={courseGoals}
           renderItem={(itemData) => {
-            return <GoalItem text={itemData.item.text} />;
+            return (
+              <GoalItem
+                text={itemData.item.text}
+                idx={itemData.item.id}
+                onDeleteItem={deleteGoalHandler}
+              />
+            );
           }}
           keyExtractor={(item) => item.id}
           alwaysBounceVertical={false}
